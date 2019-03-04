@@ -10,3 +10,4 @@ mutable struct GameState
 	GameState(game, turn, board, you) = new(game, turn, board, you)
 	GameState(oldgamestate, graph) = new(oldgamestate.game, oldgamestate.turn, oldgamestate.board, oldgamestate.you, graph)
 end
+

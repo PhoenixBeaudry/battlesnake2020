@@ -28,6 +28,7 @@ function respondToStart(req::HTTP.Request)
 	defaultBoard = MetaGraph(LightGraphs.SimpleGraphs.Grid([currentGameState.board.width, currentGameState.board.height]), 0.0)
 	currentGameState = GameState(currentGameState, defaultBoard)
 	Logging.@debug "After Initial GameState Generation" currentGameState
+	Logging.@debug "Nodes in graph" LightGraphs.nodes(graph)
 
 	return HTTP.Response(200)
 end
