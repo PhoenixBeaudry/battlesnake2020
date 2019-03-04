@@ -1,6 +1,7 @@
 module SnakeServer
 
 include("logic.jl")
+include("graphfunctions.jl")
 import HTTP, JSON2, Sockets, Logging
 
 #Setup Server Logging
@@ -28,7 +29,7 @@ function respondToStart(req::HTTP.Request)
 	defaultBoard = MetaGraph(LightGraphs.SimpleGraphs.Grid([currentGameState.board.width, currentGameState.board.height]), 0.0)
 	currentGameState = GameState(currentGameState, defaultBoard)
 	Logging.@debug "After Initial GameState Generation" currentGameState
-	Logging.@debug "Nodes in graph" LightGraphs.nodes(graph)
+	Logging.@debug "Nodes in graph" LightGraphs.vertices(currentGameState.graph)
 
 	return HTTP.Response(200)
 end
@@ -69,7 +70,7 @@ HTTP.@register(SNAKE_ROUTER, "POST", "/shutdown", respondToShutdown)
 #Start the HTTP Server
 function startServer()
 	#Start our server
-	global server = HTTP.serve(SNAKE_ROUTER, Sockets.localhost, 8081)
+	global server = HTTP.serve(SNAKE_ROUTER, Sockets.getipaddr(), 25565)
 end
 
 
