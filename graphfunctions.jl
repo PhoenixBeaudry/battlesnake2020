@@ -9,3 +9,12 @@ function tupleToGraphIndex(tuple, boardsize)
 	return (x + y*boardsize)
 end
 
+
+#graphIndexToTuple
+#Converts a graph index into a tuple of x, y
+function graphIndexToTuple(index, boardsize)
+	nx = index%boardsize == 0 ? boardsize-1 : index%boardsize - 1
+	ny = div(index, boardsize) == 1 || div(index, boardsize) == 0 ?  0 : div(index, boardsize) - 1
+	return (x = nx, y = ny)
+end
+
