@@ -5,7 +5,7 @@ mutable struct GameState
 	turn
 	board
 	you
-	graph::Union{Nothing, SimpleGraph}
+	graph::Union{Nothing, MetaGraph}
 	GameState(game, turn, board, you) = new(game, turn, board, you)
 	GameState(oldgamestate, graph) = new(oldgamestate.game, oldgamestate.turn, oldgamestate.board, oldgamestate.you, graph)
 end

@@ -17,7 +17,10 @@ end
 function respondToStart(req::HTTP.Request)
 	#Retrieve Initial Board State and construct the GameState
 	currentGameState = JSON2.read(IOBuffer(HTTP.payload(req)), GameState)
-	currentGameState = GameState(currentGameState, LightGraphs.SimpleGraphs.Grid([currentGameState.board.width, currentGameState.board.height]))
+	defaultBoard = MetaGraph(LightGraphs.SimpleGraphs.Grid([currentGameState.board.width, currentGameState.board.height]), 0.0)
+	currentGameState = GameState(currentGameState, defaultBoard)
+
+
 	println(currentGameState)
 	return HTTP.Response(200)
 end
