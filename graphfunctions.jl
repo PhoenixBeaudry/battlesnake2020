@@ -1,3 +1,4 @@
+import LightGraphs, MetaGraphs
 
 #tupleToGraphIndex
 #Takes the x, y value in a Tuple and converts it
@@ -13,8 +14,16 @@ end
 #graphIndexToTuple
 #Converts a graph index into a tuple of x, y
 function graphIndexToTuple(index, boardsize)
-	nx = index%boardsize == 0 ? boardsize-1 : index%boardsize - 1
-	ny = div(index, boardsize) == 1 || div(index, boardsize) == 0 ?  0 : div(index, boardsize) - 1
+	nx = (index-1)%boardsize
+	ny = div(index-1, boardsize)
 	return (x = nx, y = ny)
+end
+
+
+#renameGraphNodes
+function renameGraphNodes(graph, boardsize)
+	for specificnode in LightGraphs.vertices(graph)
+		MetaGraphs.set_prop!(graph, specificnode, :position, graphIndexToTuple(specificnode, boardsize))
+	end
 end
 
