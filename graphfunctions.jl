@@ -35,10 +35,14 @@ function mapXYtoFloat(xytuple, boardsize)
 	return (x=nx, y=ny)
 end
 
+
 function distanceOfTwoPoints(point1, point2)
 	return abs(point1.x - point2.x) + abs(point1.y - point2.y)
 end
 
+
+#TODO Last snake gets points of equidistance, this needs to be
+#fixed for accurate heuristic evaluation
 function generateClosestPointsDict(gamestate)
 	closestpoints = Dict{Integer, Dict{NamedTuple, Integer}}()
 	for snake in 1:length(gamestate.board.snakes)
@@ -50,11 +54,12 @@ function generateClosestPointsDict(gamestate)
 				pointmatch = false
 				for enemysnake in 1:length(gamestate.board.snakes)
 					if snake != enemysnake
-						#Have to check every enemy snake doesnt have the key.
-						if haskey(closestpoints[enemysnake], (x=i, y=j))
+						if haskey(closestpoints[enemysnake], (x=i, y=j)) 
 							pointmatch = true
 							if distanceOfTwoPoints(gamestate.board.snakes[snake].body[1], (x=i, y=j)) < closestpoints[enemysnake][(x=i, y=j)]
 								closestpoints[snake][(x=i, y=j)] = distanceOfTwoPoints(gamestate.board.snakes[snake].body[1], (x=i, y=j))
+								delete!(closestpoints[enemysnake], (x=i, y=j))
+							elseif distanceOfTwoPoints(gamestate.board.snakes[snake].body[1], (x=i, y=j)) == closestpoints[enemysnake][(x=i, y=j)]
 								delete!(closestpoints[enemysnake], (x=i, y=j))
 							end
 						end

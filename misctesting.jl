@@ -69,9 +69,9 @@ testdata = "{
 
 currentGameState = JSON2.read(testdata, GameState)
 
-#closestpointdict = generateClosestPointsDict(currentGameState)
+closestpointdict = generateClosestPointsDict(currentGameState)
 
-#=
+
 using Plots
 s1xs = Int64[]
 s1ys = Int64[]
@@ -105,7 +105,7 @@ scatter!(s2xs, s2ys, series_annotations=anno2,  markercolor = :blue)
 scatter!(s3xs, s3ys, series_annotations=anno3, markercolor = :red)
 savefig("plottesting.png")
 
-=#
+
 
 
 #=
