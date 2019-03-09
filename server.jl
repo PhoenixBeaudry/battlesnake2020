@@ -34,7 +34,6 @@ function respondToStart(req::HTTP.Request)
 
 
 
-	
 	return HTTP.Response(200)
 end
 
@@ -44,7 +43,7 @@ end
 function respondToMove(req::HTTP.Request)
 	Logging.@info("[Move]")
 	currentGameState = JSON2.read(IOBuffer(HTTP.payload(req)), GameState)
-	println(currentGameState)
+	Logging.@debug "Testing closest Points" generateClosestPointsDict(currentGameState)
 	return HTTP.Response(200)
 end
 

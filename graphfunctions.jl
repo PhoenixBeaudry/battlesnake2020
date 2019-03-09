@@ -27,3 +27,47 @@ function renameGraphNodes(graph, boardsize)
 	end
 end
 
+
+function mapXYtoFloat(xytuple, boardsize)
+	space = range(1.01, stop=1.99, length=boardsize+1)
+	nx = space[xytuple.x+1]
+	ny = space[xytuple.y+1]
+	return (x=nx, y=ny)
+end
+
+function distanceOfTwoPoints(point1, point2)
+	return abs(point1.x - point2.x) + abs(point1.y - point2.y)
+end
+
+function generateClosestPointsDict(gamestate)
+	closestpoints = Dict{Integer, Dict{NamedTuple, Integer}}()
+	for snake in 1:length(gamestate.board.snakes)
+		closestpoints[snake] = Dict{NamedTuple, Integer}()
+	end
+	for snake in 1:length(gamestate.board.snakes)
+		for i in 0:gamestate.board.width-1
+			for j in 0:gamestate.board.height-1
+				pointmatch = false
+				for enemysnake in 1:length(gamestate.board.snakes)
+					if snake != enemysnake
+						#Have to check every enemy snake doesnt have the key.
+						if haskey(closestpoints[enemysnake], (x=i, y=j))
+							pointmatch = true
+							if distanceOfTwoPoints(gamestate.board.snakes[snake].body[1], (x=i, y=j)) < closestpoints[enemysnake][(x=i, y=j)]
+								closestpoints[snake][(x=i, y=j)] = distanceOfTwoPoints(gamestate.board.snakes[snake].body[1], (x=i, y=j))
+								delete!(closestpoints[enemysnake], (x=i, y=j))
+							end
+						end
+					end
+				end
+				if !pointmatch
+					closestpoints[snake][(x=i, y=j)] = distanceOfTwoPoints(gamestate.board.snakes[snake].body[1], (x=i, y=j))
+				end
+			end
+		end
+	end
+	return closestpoints
+
+
+end
+
