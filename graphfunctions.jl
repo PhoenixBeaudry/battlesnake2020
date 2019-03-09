@@ -65,6 +65,8 @@ function generateClosestPointsDict(gamestate)
 						end
 					end
 				end
+				#TODO Problem is here, because we delete equidistant poitns from both snake dicts
+				# the last snake has point match set to false, allowing it to gain the point
 				if !pointmatch
 					closestpoints[snake][(x=i, y=j)] = distanceOfTwoPoints(gamestate.board.snakes[snake].body[1], (x=i, y=j))
 				end
