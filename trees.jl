@@ -1,16 +1,18 @@
 include("grids.jl")
+include("gamestate.jl")
 using Printf
 global count = 1
 
 mutable struct Node
 	weight::Int64
-	desc
+	gamestate::GameState
+	id
 	left::Union{Nothing, Node}
 	right::Union{Nothing, Node}
 	up::Union{Nothing, Node}
 	down::Union{Nothing, Node}
-	Node(newweight::Int64, desc) = new(newweight, desc)
-	Node(weight::Int64, desc, left::Node, right::Node, up::Node, down::Node) = new(weight, desc, left, right, up, down)
+	Node(newweight::Int64, id) = new(newweight, id)
+	Node(weight::Int64, id, left::Node, right::Node, up::Node, down::Node) = new(weight, id, left, right, up, down)
 end
 
 
@@ -67,11 +69,6 @@ function make_all_moves!(node::Node, depth)
 	make_all_moves!(node.down, depth-1)
 end
 
-#Generate the state in n moves.
-function simulate_n_moves(n, board, gamestate)
-
-end
-
 
 function generate_decision_tree(state, maxdepth)
 	decisiontree = Tree()
@@ -89,10 +86,10 @@ end
 function print_tree_util(node::Node, depth)
 	if(!isdefined(node, :left))
 		print(repeat("    ", depth))
-		@printf("Node:%f Children: None\n", node.desc)
+		@printf("Node:%f Children: None\n", node.id)
 		return
 	end
-	@printf("Node:%f Children:%f,%f,%f,%f\n", node.desc, node.left.desc, node.right.desc, node.up.desc, node.down.desc)
+	@printf("Node:%f Children:%f,%f,%f,%f\n", node.id, node.left.id, node.right.id, node.up.id, node.down.id)
 	print(repeat("    ", depth))
 	print_tree_util(node.left, depth+1)
 	print(repeat("    ", depth))

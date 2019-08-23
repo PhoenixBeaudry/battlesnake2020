@@ -1,12 +1,32 @@
 include("gamestate.jl")
 include("functionstrategies.jl")
-#Grid Creation
+
+##### TODOS #####
+
+#@CLEAN at any point a board can be generated from the gamestate
+#       is it really better to pass around as parameter instead of
+#		generating on the fly?
+# In fact, maybe the board should just be inside the gamestate,
+#	they are very tightly entwined anyways.
+
+
+#@IDEA when the node weight is finally implemented, maybe give 
+#		high weights to dead enemy snakes, eg. aggressive strat.
+
+##### END #####
+
+##### STRUCTS #####
 mutable struct Point
 	type
 	weight::Float64
 	Point() = new(".", 0.0)
 	Point(type, weight) = new(type, weight)
 end
+
+##### END #####
+
+
+##### GAMEBOARD AND GAMESTATE GENERATION #####
 
 #Creates an empty board matrix (filled with Points)
 function create_board_matrix(width, height)
@@ -48,6 +68,20 @@ function reformat_gamestate!(gamestate)
 	return
 end
 
+#Takes the gamestate and turns it into a board
+function gamestate_to_board!(gamestate, board)
+	for food in gamestate.board.food
+		board[food.x, food.y] = Point("F", 0.0)
+		influence!(board, food, food_decay, 5)
+	end
+	for snake in gamestate.board.snakes
+		for part in snake.body
+			board[part.x, part.y] = Point("E", 0.0)
+			influence!(board, part, enemy_decay, 5)
+		end
+	end
+end
+
 #Given an index, returns all nodes that are 'depth' away
 #Return: tuple array
 function nodes_of_depth_distance(seed::NamedTuple, depth, dim)
@@ -86,7 +120,6 @@ end
 
 
 #Spreads weights from points of interest across the board
-#@CLEAN board dimensions could be taken from board, not passed as parameters
 function influence!(board, seed, func, depth)
 	for currentdepth = 0:depth
 		currentnodes = nodes_of_depth_distance(seed, currentdepth, size(board)[1])
@@ -97,22 +130,76 @@ function influence!(board, seed, func, depth)
 end
 
 
-#Takes the gamestate and turns it into a board
-function gamestate_to_board!(gamestate, board)
-	for food in gamestate.board.food
-		board[food.x, food.y] = Point("F", 0.0)
-		influence!(board, food, food_decay, 5)
-	end
-	for snake in gamestate.board.snakes
-		for part in snake.body
-			board[part.x, part.y] = Point("E", 0.0)
-			influence!(board, part, enemy_decay, 5)
+##### END #####
+
+
+##### HIGHER LEVEL LOGIC #####
+
+#Simulates the game one step, assuming all enemy snakes
+# take the best adjacent weighted node and you take 'mymove' (direction string)
+function simulate_one_move(gamestate, board, mymove)
+	newgamestate = deepcopy(gamestate)
+	#Move each snake, except yourself
+	for snake in newgamestate.board.snakes
+		if(!(snake.body[1] == newgamestate.you.body[1]))
+			#Find the best move
+			move = largest_adjacent_node(snake.body[1], board)
+
+			#Simulate move by removing tail and head and adding new head
+			pop!(snake.body)
+			pushfirst!(snake.body, move)
+				#TODO Check if it overlaps with food, ifso remove food
 		end
 	end
+	#Move yourself
+	move = direction_to_node(newgamestate.you.body[1], mymove)
+	#Simulate move by removing tail and head and adding new head
+	pop!(newgamestate.you.body)
+	pushfirst!(newgamestate.you.body, move)
+		#TODO Check if food overlap or death
+
+	return (newgamestate, 
+
+end
+
+##### END #####
+
+
+##### MOVE UTILITIES #####
+
+function direction_to_node(location, dir)
+	if(dir == "left")
+		return (x=location.x-1,y=location.y)
+	elseif(dir == "right")
+		return (x=location.x+1,y=location.y)
+	elseif(dir == "up")
+		return (x=location.x,y=location.y+1)
+	elseif(dir == "down")
+		return (x=location.x,y=location.y-1)
+	end
+
+	return (x=-1,y=-1)
+end
+
+
+#returns best move node based on high weighted nodes
+function largest_adjacent_node(location, board)
+	adjacentnodes = nodes_of_depth_distance(location, 1, size(board)[1])
+	highestnode = (x=-1, y=-1)
+	highestweight = -100000
+	for node in adjacentnodes
+		 if(board[node.x, node.y].weight > highestweight)
+		 	highestnode = node
+		 	highestweight = board[node.x, node.y].weight
+		 end
+	end
+
+    return highestnode
 end
 
 
 #returns direction of best move based on high weighted nodes
+#@CLEAN Rename this stupid function lol
 function largest_adjacent_weight_dir(location, board)
 	adjacentnodes = nodes_of_depth_distance(location, 1, size(board)[1])
 	highestnode = (x=-1, y=-1)
@@ -138,11 +225,9 @@ function largest_adjacent_weight_dir(location, board)
     end
 
     return "uhoh"
-
-
 end
 
-
+##### END #####
 
 
 ##### PRINTING #####
@@ -172,3 +257,6 @@ function print_board(board::Matrix{Point})
 	end
 	println(boardstring)
 end
+
+
+##### END #####
