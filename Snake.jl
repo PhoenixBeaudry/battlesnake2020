@@ -36,13 +36,12 @@ function respond_to_move(req::HTTP.Request)
 	Logging.@info("[Move]")
 	#Create initial gamestate and board
 	currentGameState = JSON2.read(IOBuffer(HTTP.payload(req)), GameState)
-	board = create_board_matrix(currentGameState.board.width, currentGameState.board.height)
 	reformat_gamestate!(currentGameState)
-	gamestate_to_board!(currentGameState, board)
+	generate_gamestate_board!(currentGameState)
 
 	#For right now just going to return the highest weighted node
 	#adjacent to my head, for fun.
-	easy_best_move = largest_adjacent_weight_dir(currentGameState.you.body[1], board)
+	easy_best_move = largest_adjacent_weight_dir(currentGameState.you.body[1], currentGameState)
 
 	choice = Dict("move" => easy_best_move)
 

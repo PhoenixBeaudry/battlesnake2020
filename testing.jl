@@ -71,18 +71,17 @@ function testEnv()
 	}"
 
 	currentGameState = JSON2.read(testdata, GameState)
-	board = create_board_matrix(currentGameState.board.width, currentGameState.board.height)
 	reformat_gamestate!(currentGameState)
-	gamestate_to_board!(currentGameState, board)
-	return (board, currentGameState)
+	generate_gamestate_board!(currentGameState)
+	return(currentGameState)
 end
 
 
 
-function plotThis(board, gamestate)
+function plotThis(gamestate)
 	test = fill(0.0, gamestate.board.height, gamestate.board.height)
-	for i in eachindex(board)
-		test[i] = board[i].weight
+	for i in eachindex(gamestate.matrix)
+		test[i] = gamestate.matrix[i].weight
 	end
 	xs = [string("x", i) for i = 1:11]
 	ys = [string("y", i) for i = 1:11]
@@ -91,7 +90,6 @@ function plotThis(board, gamestate)
 end
 
 
-testing = testEnv()
-
-#plotThis(testing[1], testing[2])
-#print_board(testing[1])
+currentGameState = testEnv()
+moves = simulate_one_move(simulate_one_move(currentGameState, "up"), "up")
+plotThis(moves)

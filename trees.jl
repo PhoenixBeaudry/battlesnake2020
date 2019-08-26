@@ -1,5 +1,13 @@
 include("grids.jl")
 include("gamestate.jl")
+
+##### TODOS #####
+
+#@IDEA Use Julia Multithreading to generate nodes and weights (@spawn).
+
+##### END #####
+
+
 using Printf
 global count = 1
 
@@ -15,7 +23,6 @@ mutable struct Node
 	Node(weight::Int64, id, left::Node, right::Node, up::Node, down::Node) = new(weight, id, left, right, up, down)
 end
 
-
 mutable struct Tree
 	root::Node
 	Tree() = new(Node(0, 0))
@@ -26,9 +33,8 @@ function sum_weights(node::Node)
 	return node.left.weight + node.right.weight + node.up.weight + node.down.weight
 end
 
-
 #Returns the best move of the tree root as a string
-#//TODO
+#TODO
 function best_move(tree::Tree)
 	maxweight = tree.root.left.weight
 	maxmove = "left"

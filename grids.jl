@@ -3,13 +3,6 @@ include("functionstrategies.jl")
 
 ##### TODOS #####
 
-#@CLEAN at any point a board can be generated from the gamestate
-#       is it really better to pass around as parameter instead of
-#		generating on the fly?
-# In fact, maybe the board should just be inside the gamestate,
-#	they are very tightly entwined anyways.
-
-
 #@IDEA when the node weight is finally implemented, maybe give 
 #		high weights to dead enemy snakes, eg. aggressive strat.
 
@@ -27,14 +20,6 @@ end
 
 
 ##### GAMEBOARD AND GAMESTATE GENERATION #####
-
-#Creates an empty board matrix (filled with Points)
-function create_board_matrix(width, height)
-	board = Matrix{Point}(undef, width, height)
-	fill!(board, Point())
-	return board
-end
-
 
 #Converts all indexes in GameState to 1-indexing.
 function reformat_gamestate!(gamestate)
@@ -69,7 +54,9 @@ function reformat_gamestate!(gamestate)
 end
 
 #Takes the gamestate and turns it into a board
-function gamestate_to_board!(gamestate, board)
+function generate_gamestate_board!(gamestate)
+	board = Matrix{Point}(undef, gamestate.board.width, gamestate.board.height)
+	fill!(board, Point())
 	for food in gamestate.board.food
 		board[food.x, food.y] = Point("F", 0.0)
 		influence!(board, food, food_decay, 5)
@@ -80,6 +67,7 @@ function gamestate_to_board!(gamestate, board)
 			influence!(board, part, enemy_decay, 5)
 		end
 	end
+	gamestate.matrix = board
 end
 
 #Given an index, returns all nodes that are 'depth' away
@@ -137,13 +125,13 @@ end
 
 #Simulates the game one step, assuming all enemy snakes
 # take the best adjacent weighted node and you take 'mymove' (direction string)
-function simulate_one_move(gamestate, board, mymove)
+function simulate_one_move(gamestate, mymove)
 	newgamestate = deepcopy(gamestate)
 	#Move each snake, except yourself
 	for snake in newgamestate.board.snakes
-		if(!(snake.body[1] == newgamestate.you.body[1]))
+		if(snake.body[1] != newgamestate.you.body[1])
 			#Find the best move
-			move = largest_adjacent_node(snake.body[1], board)
+			move = largest_adjacent_node(snake.body[1], gamestate)
 
 			#Simulate move by removing tail and head and adding new head
 			pop!(snake.body)
@@ -156,9 +144,10 @@ function simulate_one_move(gamestate, board, mymove)
 	#Simulate move by removing tail and head and adding new head
 	pop!(newgamestate.you.body)
 	pushfirst!(newgamestate.you.body, move)
-		#TODO Check if food overlap or death
+		#TODO Check if food overlap or deat
 
-	return (newgamestate, 
+	generate_gamestate_board!(newgamestate)
+	return(newgamestate)
 
 end
 
@@ -183,14 +172,14 @@ end
 
 
 #returns best move node based on high weighted nodes
-function largest_adjacent_node(location, board)
-	adjacentnodes = nodes_of_depth_distance(location, 1, size(board)[1])
+function largest_adjacent_node(location, gamestate)
+	adjacentnodes = nodes_of_depth_distance(location, 1, size(gamestate.matrix)[1])
 	highestnode = (x=-1, y=-1)
 	highestweight = -100000
 	for node in adjacentnodes
-		 if(board[node.x, node.y].weight > highestweight)
+		 if(gamestate.matrix[node.x, node.y].weight > highestweight)
 		 	highestnode = node
-		 	highestweight = board[node.x, node.y].weight
+		 	highestweight = gamestate.matrix[node.x, node.y].weight
 		 end
 	end
 
@@ -200,14 +189,14 @@ end
 
 #returns direction of best move based on high weighted nodes
 #@CLEAN Rename this stupid function lol
-function largest_adjacent_weight_dir(location, board)
-	adjacentnodes = nodes_of_depth_distance(location, 1, size(board)[1])
+function largest_adjacent_weight_dir(location, gamestate)
+	adjacentnodes = nodes_of_depth_distance(location, 1, size(gamestate.matrix)[1])
 	highestnode = (x=-1, y=-1)
 	highestweight = -100000
 	for node in adjacentnodes
-		 if(board[node.x, node.y].weight > highestweight)
+		 if(gamestate.matrix[node.x, node.y].weight > highestweight)
 		 	highestnode = node
-		 	highestweight = board[node.x, node.y].weight
+		 	highestweight = gamestate.matrix[node.x, node.y].weight
 		 end
 	end
 
@@ -233,10 +222,10 @@ end
 ##### PRINTING #####
 
 #Prints a board, by type and weight
-function print_board(board::Matrix{Point})
+function print_board(gamestate)
 	println("Type board:")
 	boardstring = ""
-	for row in eachrow(board)
+	for row in eachrow(gamestate.matrix)
 		rowstring = ""
 		for point in row
 			rowstring = rowstring*(point.type*" ")
@@ -248,7 +237,7 @@ function print_board(board::Matrix{Point})
 
 	println("Weight board:")
 	boardstring = ""
-	for row in eachrow(board)
+	for row in eachrow(gamestate.matrix)
 		rowstring = ""
 		for point in row
 			rowstring = rowstring*(string(round(point.weight, sigdigits=2))*"     ")
