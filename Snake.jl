@@ -16,6 +16,7 @@ Logging.global_logger(serverlogger)
 #respondToPing
 #When POST is sent to /ping endpoint returns HTTP 200
 function respond_to_ping(req::HTTP.Request)
+	println("[Ping]")
 	Logging.@info("[Ping]")
 	return HTTP.Response(200)
 end
@@ -24,6 +25,7 @@ end
 #respondToStart
 #When POST is sent to /move responds with Snake move
 function respond_to_start(req::HTTP.Request)
+	println("[Start]")
 	Logging.@info("[Start]")
 	#Retrieve Initial Board State and construct the GameState
 	return HTTP.Response(200)
@@ -33,6 +35,7 @@ end
 #respondToMove
 #When POST is sent to /move responds with Snake move
 function respond_to_move(req::HTTP.Request)
+	println("[Move]")
 	Logging.@info("[Move]")
 	#Create initial gamestate and board
 	currentGameState = JSON2.read(IOBuffer(HTTP.payload(req)), GameState)
@@ -56,6 +59,7 @@ end
 #respondToShutdown
 #When POST is sent to /shutdown stop the server.
 function respond_to_shutdown(req::HTTP.Request)
+	println("[Shut Down]")
 	Logging.@info("[Shut Down]")
 	close(serverlogfile)
 	close(server)
