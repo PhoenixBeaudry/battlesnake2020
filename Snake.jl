@@ -37,6 +37,8 @@ end
 function respond_to_move(req::HTTP.Request)
 	println("[Move]")
 	Logging.@info("[Move]")
+	#Log the request
+	Logging.@debug(req)
 	#Create initial gamestate and board
 	currentGameState = JSON2.read(IOBuffer(HTTP.payload(req)), GameState)
 	reformat_gamestate!(currentGameState)
@@ -81,8 +83,7 @@ HTTP.@register(SNAKE_ROUTER, "POST", "/shutdown", respond_to_shutdown)
 #Start the HTTP Server
 function start_server()
 	#Start our server
-	global server = HTTP.serve(SNAKE_ROUTER, Sockets.localhost, 8081)
-	#global server = HTTP.serve(SNAKE_ROUTER, Sockets.getipaddr(), 25565)
+	global server = HTTP.serve(SNAKE_ROUTER, Sockets.getipaddr(), 25565)
 end
 
 start_server()
