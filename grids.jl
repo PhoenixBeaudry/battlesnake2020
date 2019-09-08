@@ -172,9 +172,9 @@ function direction_to_node(location, dir)
 	elseif(dir == "right")
 		return (x=location.x+1,y=location.y)
 	elseif(dir == "up")
-		return (x=location.x,y=location.y+1)
-	elseif(dir == "down")
 		return (x=location.x,y=location.y-1)
+	elseif(dir == "down")
+		return (x=location.x,y=location.y+1)
 	end
 
 	return (x=-1,y=-1)
@@ -210,10 +210,10 @@ function largest_adjacent_weight_dir(location, gamestate)
 		 end
 	end
 
-	if location.x == highestnode.x && location.y < highestnode.y
+	if location.x == highestnode.x && location.y > highestnode.y
         return "up"
     end
-    if location.x == highestnode.x && location.y > highestnode.y
+    if location.x == highestnode.x && location.y < highestnode.y
         return "down"
     end
     if location.x < highestnode.x && location.y == highestnode.y
@@ -232,6 +232,7 @@ end
 ##### PRINTING #####
 
 #Prints a board, by type and weight
+#@FIX Prints incorrectly, (0,0) is top left corner
 function print_board(gamestate)
 	println("Type board:")
 	boardstring = ""
