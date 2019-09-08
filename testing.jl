@@ -77,19 +77,23 @@ function testEnv()
 end
 
 
-
-function plotThis(gamestate)
+function plotThis(gamestate, filename)
 	test = fill(0.0, gamestate.board.height, gamestate.board.height)
 	for i in eachindex(gamestate.matrix)
 		test[i] = gamestate.matrix[i].weight
 	end
 	xs = [string("x", i) for i = 1:11]
 	ys = [string("y", i) for i = 1:11]
-    plot(xs, ys, test, seriestype=:heatmap)
-    savefig("test.png")
+    plot(xs, ys, test, seriestype=:heatmap, match_dimensions=true)
+    savefig(filename)
 end
 
 
 currentGameState = testEnv()
+plotThis(currentGameState, "file1.png")
+moves = simulate_one_move(currentGameState, "up")
+plotThis(moves, "file2.png")
 moves = simulate_one_move(simulate_one_move(currentGameState, "up"), "up")
-plotThis(moves)
+plotThis(moves, "file3.png")
+moves = simulate_one_move(simulate_one_move(moves = simulate_one_move(simulate_one_move(currentGameState, "up"), "up")
+plotThis(moves, "file4.png")

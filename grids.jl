@@ -127,26 +127,30 @@ end
 # take the best adjacent weighted node and you take 'mymove' (direction string)
 function simulate_one_move(gamestate, mymove)
 	newgamestate = deepcopy(gamestate)
-	#Move each snake, except yourself
+	#Move each snake
 	for snake in newgamestate.board.snakes
 		if(snake.body[1] != newgamestate.you.body[1])
 			#Find the best move
 			move = largest_adjacent_node(snake.body[1], gamestate)
-
 			#Simulate move by removing tail and head and adding new head
 			pop!(snake.body)
 			pushfirst!(snake.body, move)
 				#TODO Check if it overlaps with food, ifso remove food
+		else
+			move = direction_to_node(snake.body[1], mymove)
+			#Simulate move by removing tail and head and adding new head
+			pop!(snake.body)
+			pushfirst!(snake.body, move)
 		end
 	end
-	#Move yourself
+	#Move yourself object
 	move = direction_to_node(newgamestate.you.body[1], mymove)
 	#Simulate move by removing tail and head and adding new head
 	pop!(newgamestate.you.body)
 	pushfirst!(newgamestate.you.body, move)
-		#TODO Check if food overlap or deat
-
+		#TODO Check if food overlap or death
 	generate_gamestate_board!(newgamestate)
+
 	return(newgamestate)
 
 end

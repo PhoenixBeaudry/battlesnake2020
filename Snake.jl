@@ -45,6 +45,8 @@ function respond_to_move(req::HTTP.Request)
 
 	choice = Dict("move" => easy_best_move)
 
+	Logging.@info("Chosen move: ", easy_best_move)
+
 	#So really what I want to do is generate the decision trees
 	#And then just choose the highest weighted node
 	#Then return the JSON for the move
