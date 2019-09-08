@@ -125,6 +125,7 @@ end
 
 #Simulates the game one step, assuming all enemy snakes
 # take the best adjacent weighted node and you take 'mymove' (direction string)
+#@FIX If food is collected dont remove tail.
 function simulate_one_move(gamestate, mymove)
 	newgamestate = deepcopy(gamestate)
 	#Move each snake
@@ -232,30 +233,22 @@ end
 ##### PRINTING #####
 
 #Prints a board, by type and weight
-#@FIX Prints incorrectly, (0,0) is top left corner
 function print_board(gamestate)
 	println("Type board:")
-	boardstring = ""
-	for row in eachrow(gamestate.matrix)
-		rowstring = ""
-		for point in row
-			rowstring = rowstring*(point.type*" ")
+	for column in eachcol(gamestate.matrix)
+		for point in column
+			print(point.type*" ")
 		end
-		boardstring = rowstring*"\n"*boardstring
+		println()
 	end
-	println(boardstring)
-
 
 	println("Weight board:")
-	boardstring = ""
-	for row in eachrow(gamestate.matrix)
-		rowstring = ""
-		for point in row
-			rowstring = rowstring*(string(round(point.weight, sigdigits=2))*"     ")
+	for column in eachcol(gamestate.matrix)
+		for point in column
+			print(string(round(point.weight, sigdigits=2))*"     ")
 		end
-		boardstring = rowstring*"\n\n\n"*boardstring
+		println()
 	end
-	println(boardstring)
 end
 
 
