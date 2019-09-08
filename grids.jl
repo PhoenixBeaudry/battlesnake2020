@@ -135,7 +135,10 @@ function simulate_one_move(gamestate, mymove)
 			#Simulate move by removing tail and head and adding new head
 			pop!(snake.body)
 			pushfirst!(snake.body, move)
-				#TODO Check if it overlaps with food, ifso remove food
+			#If food overlap, remove food.
+			if(in(move, newgamestate.board.food))
+				splice!(newgamestate.board.food, move)
+			end
 		else
 			move = direction_to_node(snake.body[1], mymove)
 			#Simulate move by removing tail and head and adding new head
@@ -148,7 +151,10 @@ function simulate_one_move(gamestate, mymove)
 	#Simulate move by removing tail and head and adding new head
 	pop!(newgamestate.you.body)
 	pushfirst!(newgamestate.you.body, move)
-		#TODO Check if food overlap or death
+	#If food overlap, remove food.
+	if(in(move, newgamestate.board.food))
+		splice!(newgamestate.board.food, move)
+	end
 	generate_gamestate_board!(newgamestate)
 
 	return(newgamestate)
