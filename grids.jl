@@ -6,6 +6,8 @@ include("functionstrategies.jl")
 #@IDEA when the node weight is finally implemented, maybe give 
 #		high weights to dead enemy snakes, eg. aggressive strat.
 
+#@TODO Add Typing to most methods.
+
 ##### END #####
 
 ##### STRUCTS #####
@@ -123,8 +125,10 @@ end
 
 ##### HIGHER LEVEL LOGIC #####
 
+
 #Simulates the game one step, assuming all enemy snakes
 # take the best adjacent weighted node and you take 'mymove' (direction string)
+# RETURN: ::GameState
 #@FIX If food is collected dont remove tail.
 function simulate_one_move(gamestate, mymove)
 	newgamestate = deepcopy(gamestate)
