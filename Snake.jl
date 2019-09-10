@@ -44,13 +44,12 @@ function respond_to_move(req::HTTP.Request)
 	reformat_gamestate!(currentGameState)
 	generate_gamestate_board!(currentGameState)
 
-	#For right now just going to return the highest weighted node
-	#adjacent to my head, for fun.
-	easy_best_move = largest_adjacent_weight_dir(currentGameState.you.body[1], currentGameState)
+	# Generate the dang decision tree w/ given foresight depth
+	tree = generate_decision_tree(currentGameState, 4)
+	move = best_move(tree)
 
-	choice = Dict("move" => easy_best_move)
-
-	Logging.@info("Chosen move: ", easy_best_move)
+	choice = Dict("move" => move)
+	Logging.@info("Chosen move: ", move)
 
 	#So really what I want to do is generate the decision trees
 	#And then just choose the highest weighted node
