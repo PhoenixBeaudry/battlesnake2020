@@ -23,7 +23,9 @@ end
 
 ##### GAMEBOARD AND GAMESTATE GENERATION #####
 
-#Converts all indexes in GameState to 1-indexing.
+# reformat_gamestate!(::GameState)
+# RETURN: None
+# Converts all indexes in GameState to 1-indexing.
 function reformat_gamestate!(gamestate)
 
 	newfood = []
@@ -55,7 +57,9 @@ function reformat_gamestate!(gamestate)
 	return
 end
 
-#Takes the gamestate and turns it into a board
+# generate_gamestate_board!(::GameState)
+# RETURN: None
+# Generates the boardmatrix from the gamestate and stores in gamestate struct
 function generate_gamestate_board!(gamestate)
 	board = Matrix{Point}(undef, gamestate.board.width, gamestate.board.height)
 	fill!(board, Point())
@@ -72,8 +76,9 @@ function generate_gamestate_board!(gamestate)
 	gamestate.matrix = board
 end
 
-#Given an index, returns all nodes that are 'depth' away
-#Return: tuple array
+# nodes_of_depth_distance(::NamedTuple, ::Int, ::Tuple)
+# RETURN: TupleArray
+# Given an index, returns all nodes that are 'depth' away
 function nodes_of_depth_distance(seed::NamedTuple, depth, dim)
 	nodes = Set()
 
@@ -110,6 +115,8 @@ end
 
 
 #Spreads weights from points of interest across the board
+# influence!(board, seed, func, depth)
+# RETURN: None
 function influence!(board, seed, func, depth)
 	for currentdepth = 0:depth
 		currentnodes = nodes_of_depth_distance(seed, currentdepth, size(board)[1])
@@ -125,10 +132,10 @@ end
 
 ##### HIGHER LEVEL LOGIC #####
 
-
-#Simulates the game one step, assuming all enemy snakes
-# take the best adjacent weighted node and you take 'mymove' (direction string)
+# simulate_one_move(::GameState, ::String)
 # RETURN: ::GameState
+# Simulates the game one step, assuming all enemy snakes
+# take the best adjacent weighted node and you take 'mymove' (direction string)
 #@FIX If food is collected dont remove tail.
 function simulate_one_move(gamestate, mymove)
 
@@ -193,6 +200,9 @@ end
 
 ##### MOVE UTILITIES #####
 
+# direction_to_node(::NamedTuple, :String)
+# RETURN: ::NamedTuple
+# Converts a coordinate and a direction to another coordinate
 function direction_to_node(location, dir)
 	if(dir == "left")
 		return (x=location.x-1,y=location.y)
@@ -207,8 +217,9 @@ function direction_to_node(location, dir)
 	return (x=-1,y=-1)
 end
 
-
-#returns best move node based on high weighted nodes
+# largest_adjacent_node(::Namedtuple, ::GameState)
+# RETURN: ::NamedTuple
+# Returns best move node based on high weighted nodes
 function largest_adjacent_node(location, gamestate)
 	adjacentnodes = nodes_of_depth_distance(location, 1, size(gamestate.matrix)[1])
 	highestnode = (x=-1, y=-1)
@@ -223,8 +234,9 @@ function largest_adjacent_node(location, gamestate)
     return highestnode
 end
 
-
-#returns direction of best move based on high weighted nodes
+# largest_adjacent_weight_dir(::NamedTuple, ::GameState)
+# RETURN ::String
+# Returns direction of best move based on high weighted nodes
 #@CLEAN Rename this stupid function lol
 function largest_adjacent_weight_dir(location, gamestate)
 	adjacentnodes = nodes_of_depth_distance(location, 1, size(gamestate.matrix)[1])

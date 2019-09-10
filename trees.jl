@@ -8,9 +8,6 @@ include("gamestate.jl")
 
 #@REMIND Only leaf nodes contribute to weight, at least I think thats best.
 
-#@FIX Currently the weight does not take into account running into enemy snakes
-# or yourself as deaths, only being forced into a wall
-
 ##### END #####
 
 ##### Data Structures #####
@@ -36,7 +33,7 @@ end
 ##### Decision Tree #####
 
 # generate_decision_tree(::GameState, ::Int64)
-# RETURN: Tree
+# RETURN: ::Tree
 function generate_decision_tree(rootgamestate, maxdepth)
 	#Make Tree struct
 	decisiontree = Tree(rootgamestate)
@@ -53,7 +50,7 @@ end
 
 
 # make_all_moves!(::Node, ::Int64)
-# RETURN: None.
+# RETURN: None
 #@CLEAN - must be a better way to do this...
 function make_all_moves!(node::Node, depth)
 	if(depth == 0)
@@ -94,7 +91,7 @@ function make_all_moves!(node::Node, depth)
 end
 
 # generate_move_node(::GameState, ::String)
-# RETURN: Node
+# RETURN: ::Node
 function generate_move_node(gamestate::GameState, mymove)
 	#Create blank Node struct.
 	self = Node()
@@ -114,7 +111,7 @@ function generate_move_node(gamestate::GameState, mymove)
 end
 
 # generate_gamestate_weight(::GameState)
-# RETURN: Int64
+# RETURN: ::Int64
 function generate_gamestate_weight(gamestate)
 	return 0
 end

@@ -1,4 +1,12 @@
 #SNAKE
+
+##### TODOS #####
+
+#@IDEA Currently the enemy ai doesnt account for aggressive snakes
+# they only follow the highest weighted path in the gamestate matrix.
+
+##### END #####
+
 import HTTP, JSON2, Sockets, Logging, JSON
 include("gamestate.jl")
 include("grids.jl")
@@ -13,8 +21,8 @@ Logging.global_logger(serverlogger)
 
 
 
-#respondToPing
-#When POST is sent to /ping endpoint returns HTTP 200
+# respond_to_ping
+# When POST is sent to /ping endpoint returns HTTP 200
 function respond_to_ping(req::HTTP.Request)
 	println("[Ping]")
 	Logging.@info("[Ping]")
@@ -22,8 +30,8 @@ function respond_to_ping(req::HTTP.Request)
 end
 
 
-#respondToStart
-#When POST is sent to /move responds with Snake move
+# respond_to_start
+# When POST is sent to /move responds with Snake move
 function respond_to_start(req::HTTP.Request)
 	println("[Start]")
 	Logging.@info("[Start]")
@@ -32,8 +40,8 @@ function respond_to_start(req::HTTP.Request)
 end
 
 
-#respondToMove
-#When POST is sent to /move responds with Snake move
+# respond_to_move
+# When POST is sent to /move responds with Snake move
 function respond_to_move(req::HTTP.Request)
 	println("[Move]")
 	Logging.@info("[Move]")
@@ -57,8 +65,8 @@ function respond_to_move(req::HTTP.Request)
 	return HTTP.Response(200, body=JSON.json(choice))
 end
 
-#respondToShutdown
-#When POST is sent to /shutdown stop the server.
+# respond_to_shutdown
+# When POST is sent to /shutdown stop the server.
 function respond_to_shutdown(req::HTTP.Request)
 	println("[Shut Down]")
 	Logging.@info("[Shut Down]")
@@ -68,15 +76,12 @@ function respond_to_shutdown(req::HTTP.Request)
 end
 
 
-
-
 #Define our endpoints and their corresponding functions
 const SNAKE_ROUTER = HTTP.Router()
 HTTP.@register(SNAKE_ROUTER, "POST", "/start", respond_to_start)
 HTTP.@register(SNAKE_ROUTER, "POST", "/move", respond_to_move)
 HTTP.@register(SNAKE_ROUTER, "POST", "/ping", respond_to_ping)
 HTTP.@register(SNAKE_ROUTER, "POST", "/shutdown", respond_to_shutdown)
-
 
 
 #Start the HTTP Server

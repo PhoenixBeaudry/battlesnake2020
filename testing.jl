@@ -75,8 +75,6 @@ function testEnv()
 	return(currentGameState)
 end
 
-
-#@FIX Plots incorrectly, (0,0) is top left corner
 function plotThis(gamestate, filename)
 	test = fill(0.0, gamestate.board.height, gamestate.board.height)
 	for i in eachindex(gamestate.matrix)
@@ -92,4 +90,3 @@ end
 currentGameState = testEnv()
 tree = generate_decision_tree(currentGameState, 3)
 print(best_move(tree))
-#plotThis(currentGameState, "file1.png")
