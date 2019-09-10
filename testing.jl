@@ -90,12 +90,6 @@ end
 
 
 currentGameState = testEnv()
-plotThis(currentGameState, "file1.png")
-#=
-moves = simulate_one_move(currentGameState, "up")
-plotThis(moves, "file2.png")
-moves = simulate_one_move(simulate_one_move(currentGameState, "up"), "up")
-plotThis(moves, "file3.png")
-moves = simulate_one_move(simulate_one_move(moves = simulate_one_move(simulate_one_move(currentGameState, "up"), "up")
-plotThis(moves, "file4.png")
-=#
+tree = generate_decision_tree(currentGameState, 3)
+print(best_move(tree))
+#plotThis(currentGameState, "file1.png")

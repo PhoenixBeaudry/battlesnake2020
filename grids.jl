@@ -131,6 +131,12 @@ end
 # RETURN: ::GameState
 #@FIX If food is collected dont remove tail.
 function simulate_one_move(gamestate, mymove)
+
+	#Check wall collisions, if collision return.
+	target = direction_to_node(gamestate.you.body[1], mymove)
+	if(target.x < 1 || target.y < 1 || target.x > gamestate.board.width || target.y > gamestate.board.height)
+		return -1
+	end
 	newgamestate = deepcopy(gamestate)
 	#Move each snake
 	for snake in newgamestate.board.snakes
@@ -151,7 +157,7 @@ function simulate_one_move(gamestate, mymove)
 			pushfirst!(snake.body, move)
 		end
 	end
-	#Move yourself object
+	#Move yourself
 	move = direction_to_node(newgamestate.you.body[1], mymove)
 	#Simulate move by removing tail and head and adding new head
 	pop!(newgamestate.you.body)
@@ -160,8 +166,24 @@ function simulate_one_move(gamestate, mymove)
 	if(in(move, newgamestate.board.food))
 		splice!(newgamestate.board.food, move)
 	end
-	generate_gamestate_board!(newgamestate)
 
+	#Before generating the board, check if move results in death, if it does, return.
+		#Check your collisions
+		if(newgamestate.you.body[1] in newgamestate.you.body[2:end])
+			return -1
+		end
+
+		#Check enemy collisions
+		for snake in newgamestate.board.snakes
+			if(snake.body[1] != newgamestate.you.body[1])
+				if(newgamestate.you.body[1] in snake.body)
+					return -1
+				end
+			end
+		end
+
+	#Generate board and return.
+	generate_gamestate_board!(newgamestate)
 	return(newgamestate)
 
 end
