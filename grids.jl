@@ -148,7 +148,7 @@ function simulate_one_move(gamestate, mymove)
 			pushfirst!(snake.body, move)
 			#If food overlap, remove food.
 			if(in(move, newgamestate.board.food))
-				splice!(newgamestate.board.food, move)
+				splice!(newgamestate.board.food, findfirst(isequal(move), newgamestate.board.food))
 			end
 		else
 			move = direction_to_node(snake.body[1], mymove)
@@ -164,7 +164,7 @@ function simulate_one_move(gamestate, mymove)
 	pushfirst!(newgamestate.you.body, move)
 	#If food overlap, remove food.
 	if(in(move, newgamestate.board.food))
-		splice!(newgamestate.board.food, move)
+		splice!(newgamestate.board.food, findfirst(isequal(move), newgamestate.board.food))
 	end
 
 	#Before generating the board, check if move results in death, if it does, return.
