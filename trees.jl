@@ -17,7 +17,6 @@ include("gamestate.jl")
 mutable struct Node
 	gamestate::GameState
 	weight::Int64
-	id
 	left::Union{Nothing, Node}
 	right::Union{Nothing, Node}
 	up::Union{Nothing, Node}
@@ -58,9 +57,16 @@ end
 function make_all_moves!(node::Node, depth)
 	if(depth == 0)
 		#I am a leaf node, therefore you should find out my weight
-		node.weight = generate_gamestate_weight(node.gamestate)
-		return
+			#Case where leaf node is a death node resulting in no gamestate
+		if(isdefined(node, :weight))
+			return
+		else
+			node.weight = generate_gamestate_weight(node.gamestate)
+			return
+		end
 	end
+
+	#Generate move nodes for each direction
 	if(isdefined(node, :gamestate))
 		node.left = generate_move_node(node.gamestate, "left")
 	end
@@ -77,6 +83,7 @@ function make_all_moves!(node::Node, depth)
 		node.down = generate_move_node(node.gamestate, "down")
 	end
 
+	#Recursively generate moves
 	if(isdefined(node, :left))
 		make_all_moves!(node.left, depth-1)
 	end
