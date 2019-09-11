@@ -8,6 +8,9 @@ include("functionstrategies.jl")
 
 #@TODO Add Typing to most methods.
 
+#@FIX Snake will turn back into own tail if only 2 long, because
+# I assume it thinks next turn the tail will not be there and its a valid move.
+
 ##### END #####
 
 ##### STRUCTS #####
@@ -176,7 +179,7 @@ function simulate_one_move(gamestate, mymove)
 
 	#Before generating the board, check if move results in death, if it does, return.
 		#Check your collisions
-		if(newgamestate.you.body[1] in newgamestate.you.body[2:end])
+		if(newgamestate.you.body[1] in newgamestate.you.body[2:end] || newgamestate.you.body[1] == gamestate.you.body[2])
 			return -1
 		end
 
