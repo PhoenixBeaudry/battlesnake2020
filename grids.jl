@@ -154,8 +154,12 @@ function simulate_one_move(gamestate, mymove)
 			#Find the best move
 			move = largest_adjacent_node(snake.body[1], gamestate)
 			#Simulate move by removing tail and head and adding new head
-			pop!(snake.body)
-			pushfirst!(snake.body, move)
+			if(length(snake.body)==1)
+				pushfirst!(snake.body, move)
+			else
+				pop!(snake.body)
+				pushfirst!(snake.body, move)
+			end
 			#If food overlap, remove food.
 			if(in(move, newgamestate.board.food))
 				splice!(newgamestate.board.food, findfirst(isequal(move), newgamestate.board.food))
@@ -163,15 +167,29 @@ function simulate_one_move(gamestate, mymove)
 		else
 			move = direction_to_node(snake.body[1], mymove)
 			#Simulate move by removing tail and head and adding new head
-			pop!(snake.body)
-			pushfirst!(snake.body, move)
+			if(length(snake.body)==1)
+				pushfirst!(snake.body, move)
+			else
+				pop!(snake.body)
+				pushfirst!(snake.body, move)
+			end
 		end
 	end
 	#Move yourself
 	move = direction_to_node(newgamestate.you.body[1], mymove)
+	#Make sure move isnt into tail if size two.
+	if(length(newgamestate.you.body)==2)
+		if(move == newgamestate.you.body[2])
+			return -1
+		end
+	end
 	#Simulate move by removing tail and head and adding new head
-	pop!(newgamestate.you.body)
-	pushfirst!(newgamestate.you.body, move)
+	if(length(newgamestate.you.body)==1)
+		pushfirst!(newgamestate.you.body, move)
+	else
+		pop!(newgamestate.you.body)
+		pushfirst!(newgamestate.you.body, move)
+	end
 	#If food overlap, remove food.
 	if(in(move, newgamestate.board.food))
 		splice!(newgamestate.board.food, findfirst(isequal(move), newgamestate.board.food))
@@ -179,7 +197,7 @@ function simulate_one_move(gamestate, mymove)
 
 	#Before generating the board, check if move results in death, if it does, return.
 		#Check your collisions
-		if(newgamestate.you.body[1] in newgamestate.you.body[2:end] || newgamestate.you.body[1] == gamestate.you.body[2])
+		if(newgamestate.you.body[1] in newgamestate.you.body[2:end])
 			return -1
 		end
 
