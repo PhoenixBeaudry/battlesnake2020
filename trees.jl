@@ -8,6 +8,9 @@ include("gamestate.jl")
 
 #@REMIND Only leaf nodes contribute to weight, at least I think thats best.
 
+#@REMIND Dont forget to take into account starvation, must incentivise food in weight.
+
+
 ##### END #####
 
 ##### Data Structures #####
@@ -54,6 +57,8 @@ end
 #@CLEAN - must be a better way to do this...
 function make_all_moves!(node::Node, depth)
 	if(depth == 0)
+		#I am a leaf node, therefore you should find out my weight
+		node.weight = generate_gamestate_weight(node.gamestate)
 		return
 	end
 	if(isdefined(node, :gamestate))
@@ -97,23 +102,20 @@ function generate_move_node(gamestate::GameState, mymove)
 	self = Node()
 	# Simulate the gamestate by one move then replace old gamestate.
 	newgamestate = simulate_one_move(gamestate, mymove)
+
+	#This move resulted in a death, high negative weight.
 	if(newgamestate == -1)
 		self.weight=-10000
-		self.id = 0
 		return self
 	end
 	self.gamestate = newgamestate
-
-	#@FIX this probably shouldnt be here but Ill leave it for now.
-	self.weight = generate_gamestate_weight(self.gamestate)
-	self.id = 0
 	return self
 end
 
 # generate_gamestate_weight(::GameState)
 # RETURN: ::Int64
 function generate_gamestate_weight(gamestate)
-	return 0
+	return gamestate.you.health
 end
 
 # sum_weights!(::Node)
