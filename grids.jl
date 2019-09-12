@@ -9,7 +9,9 @@ include("functionstrategies.jl")
 #@TODO Add Typing to most methods.
 
 #@FIX While head collision vs larger enemy snakes is considered a death
-# the move should still be taken if it is less 'guaranteed' 
+# the move should still be taken if it is less 'guaranteed'
+
+#@REFACTOR Convert as many Arrays to Sets as possible?
 
 ##### END #####
 
@@ -205,13 +207,21 @@ function simulate_one_move(gamestate, mymove)
 		newgamestate.you = (id=newgamestate.you.id, name=newgamestate.you.name, health=100, body=newgamestate.you.body)
 	end
 
+	#Check if starve condition.
+	if(newgamestate.you.health-1 == 0)
+		return -1
+	end
+
+	#Tick health down by one.
+	newgamestate.you = (id=newgamestate.you.id, name=newgamestate.you.name, health=newgamestate.you.health-1, body=newgamestate.you.body)
+
 	#Before generating the board, check if move results in death, if it does, return.
 		#Check your collisions
 	if(newgamestate.you.body[1] in newgamestate.you.body[2:end])
 		return -1
 	end
 
-	#Check enemy collisions
+		#Check enemy collisions
 	for snake in newgamestate.board.snakes
 		if(snake.body[1] != newgamestate.you.body[1])
 			if(newgamestate.you.body[1] in snake.body)
