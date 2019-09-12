@@ -194,7 +194,6 @@ function simulate_one_move(gamestate, mymove)
 	if(in(move, newgamestate.board.food))
 		splice!(newgamestate.board.food, findfirst(isequal(move), newgamestate.board.food))
 		newgamestate.you = (id=newgamestate.you.id, name=newgamestate.you.name, health=100, body=newgamestate.you.body)
-		newgamestate.you.health = 100
 	end
 
 	#Before generating the board, check if move results in death, if it does, return.
