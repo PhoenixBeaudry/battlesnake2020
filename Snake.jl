@@ -8,6 +8,9 @@
 #@TODO Make snake afraid of possible head on head collisions with larger snakes.
 # and favour collisions if bigger snake.
 
+#@IDEA Use current system for start of game when multiple snakes as its easy
+# to simulate 'dumb' enemies. Once 1v1 switch to more classic minimax.
+
 ##### END #####
 
 import HTTP, JSON2, Sockets, Logging, JSON

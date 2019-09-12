@@ -146,6 +146,17 @@ function simulate_one_move(gamestate, mymove)
 	if(target.x < 1 || target.y < 1 || target.x > gamestate.board.width || target.y > gamestate.board.height)
 		return -1
 	end
+
+	#Before major simulating check if its a 'enemy snake might eat me state' and count as death?? Or perhaps very low weight.
+	for snake in gamestate.board.snakes
+		if(snake.body[1] != gamestate.you.body[1])
+			if(adjacent_nodes(target, snake.body[1]) && snake.health >= gamestate.you.health)
+				println("DEATH BY HEAD COLLISION")
+				return -1
+			end	
+		end
+	end
+
 	newgamestate = deepcopy(gamestate)
 	#Move each snake
 	for snake in newgamestate.board.snakes
@@ -220,6 +231,20 @@ end
 
 
 ##### MOVE UTILITIES #####
+
+# adjacent_nodes(::NamedTuple, ::NamedTuple)
+# RETURN: ::Boolean
+function adjacent_nodes(node1, node2)
+	if(node1.x != node2.x && node1.y != node2.y)
+		return false
+	elseif(node1.x == node2.x && (node1.y == node2.y+1 || node1.y == node2.y-1))
+		return true
+	elseif(node1.y == node2.y && (node1.x == node2.x+1 || node1.x == node2.x-1))
+		return true
+	end
+	return false
+
+end
 
 # direction_to_node(::NamedTuple, :String)
 # RETURN: ::NamedTuple

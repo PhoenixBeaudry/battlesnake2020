@@ -70,7 +70,7 @@ function testEnv()
 	  }
 	}"
 
-	testdata = "{\"game\":{\"id\":\"2891a981-230d-47dc-be47-9840c902d393\"},\"turn\":37,\"board\":{\"height\":11,\"width\":11,\"food\":[{\"x\":0,\"y\":5},{\"x\":3,\"y\":10}],\"snakes\":[{\"id\":\"gs_qCDXP8QYJF7dHfRwq4tggBYQ\",\"name\":\"unapersona / Glotona\",\"health\":99,\"body\":[{\"x\":4,\"y\":3},{\"x\":4,\"y\":2},{\"x\":5,\"y\":2},{\"x\":5,\"y\":1},{\"x\":6,\"y\":1},{\"x\":6,\"y\":2},{\"x\":6,\"y\":3},{\"x\":6,\"y\":4},{\"x\":6,\"y\":5},{\"x\":6,\"y\":6},{\"x\":6,\"y\":7}]},{\"id\":\"gs_Rmx7bMmxtKcKKvXvPC7dm76f\",\"name\":\"PhoenixBeaudry / Test\",\"health\":63,\"body\":[{\"x\":5,\"y\":4},{\"x\":5,\"y\":5},{\"x\":5,\"y\":6}]}]},\"you\":{\"id\":\"gs_Rmx7bMmxtKcKKvXvPC7dm76f\",\"name\":\"PhoenixBeaudry / Test\",\"health\":63,\"body\":[{\"x\":5,\"y\":4},{\"x\":5,\"y\":5},{\"x\":5,\"y\":6}]}}"
+	testdata = "{\"game\":{\"id\":\"402952c4-ad2d-4d4f-9421-4dc0caed0f57\"},\"turn\":32,\"board\":{\"height\":11,\"width\":11,\"food\":[{\"x\":2,\"y\":10},{\"x\":10,\"y\":2},{\"x\":0,\"y\":5}],\"snakes\":[{\"id\":\"gs_wqBQBhdSv77hKMrPdD9YJBBP\",\"name\":\"AhmedNSidd / Samaritan-2\",\"health\":91,\"body\":[{\"x\":3,\"y\":5},{\"x\":4,\"y\":5},{\"x\":4,\"y\":4},{\"x\":4,\"y\":3},{\"x\":4,\"y\":2},{\"x\":5,\"y\":2},{\"x\":6,\"y\":2},{\"x\":6,\"y\":3}]},{\"id\":\"gs_YXtbWPXj4773Tp6tCmVycJrJ\",\"name\":\"PhoenixBeaudry / Test\",\"health\":68,\"body\":[{\"x\":4,\"y\":6},{\"x\":4,\"y\":7},{\"x\":5,\"y\":7}]}]},\"you\":{\"id\":\"gs_YXtbWPXj4773Tp6tCmVycJrJ\",\"name\":\"PhoenixBeaudry / Test\",\"health\":68,\"body\":[{\"x\":4,\"y\":6},{\"x\":4,\"y\":7},{\"x\":5,\"y\":7}]}}"
 	currentGameState = JSON2.read(testdata, GameState)
 	reformat_gamestate!(currentGameState)
 	generate_gamestate_board!(currentGameState)
