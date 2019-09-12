@@ -6,9 +6,6 @@ include("gamestate.jl")
 
 #@IDEA Use Julia Multithreading to generate nodes and weights (@spawn).
 
-#@FIX Major revisions needed: due to summing nodes, deeper branches death leafs add up,
-# outweighing immediate deaths. Current work around is just to check for -10000 equality, not great
-
 #@REMIND Only leaf nodes contribute to weight, at least I think thats best.
 
 #@REMIND Dont forget to take into account starvation, must incentivise food in weight.
@@ -19,7 +16,7 @@ include("gamestate.jl")
 ##### Data Structures #####
 mutable struct Node
 	gamestate::GameState
-	weight::Int64
+	weight
 	direction
 	left::Union{Nothing, Node}
 	right::Union{Nothing, Node}
@@ -44,6 +41,7 @@ function generate_decision_tree(rootgamestate, maxdepth)
 	#Make Tree struct
 	decisiontree = Tree(rootgamestate)
 	decisiontree.root.direction = "root"
+	decisiontree.root.weight = "undef"
 	#Generate the Nodes.
 	make_all_moves!(decisiontree.root, maxdepth)
 
@@ -57,12 +55,11 @@ end
 
 # make_all_moves!(::Node, ::Int64)
 # RETURN: None
-#@CLEAN - must be a better way to do this...
 function make_all_moves!(node::Node, depth)
 	if(depth == 0)
 		#I am a leaf node, therefore you should find out my weight
 			#Case where leaf node is a death node resulting in no gamestate
-		if(!isdefined(node, :gamestate))
+		if(node.weight == "death")
 			return
 		else
 			node.weight = generate_gamestate_weight(node.gamestate)
@@ -95,10 +92,11 @@ function generate_move_node(gamestate::GameState, mymove)
 
 	#This move resulted in a death, high negative weight.
 	if(newgamestate == -1)
-		self.weight=-10000
+		self.weight = "death"
 		return self
 	end
 	self.gamestate = newgamestate
+	self.weight = "undef"
 	return self
 end
 
@@ -111,10 +109,11 @@ end
 # sum_weights!(::Node)
 # RETURN: None
 function sum_weights!(node::Node)
-	if(node.weight < 11111)
-		return node.weight
+	if(node.weight == "death")
+		return -10000
+	elseif(node.weight == "undef")
+		node.weight = 0
 	end
-	node.weight = 0
 
 	if(isdefined(node, :left))
 		node.weight += sum_weights!(node.left)
@@ -137,21 +136,21 @@ end
 
 #Returns the best move of the tree root as a string
 function best_move(tree::Tree)
-	maxweight = -1111111111
+	maxweight = -1111111
 	maxmove = "dead"
-	if(tree.root.left.weight > maxweight && tree.root.left.weight != -10000)
+	if(tree.root.left.weight != "death" && tree.root.left.weight > maxweight)
 		maxweight = tree.root.left.weight
 		maxmove = "left"
 	end
-	if(tree.root.right.weight > maxweight && tree.root.right.weight != -10000)
+	if(tree.root.right.weight != "death" && tree.root.right.weight > maxweight)
 		maxweight = tree.root.right.weight
 		maxmove = "right"
 	end
-	if(tree.root.up.weight > maxweight && tree.root.up.weight != -10000)
+	if(tree.root.up.weight != "death" && tree.root.up.weight > maxweight)
 		maxweight = tree.root.up.weight
 		maxmove = "up"
 	end
-	if(tree.root.down.weight > maxweight && tree.root.down.weight != -10000)
+	if(tree.root.down.weight != "death" && tree.root.down.weight > maxweight)
 		maxweight = tree.root.down.weight
 		maxmove = "down"
 	end
@@ -170,11 +169,11 @@ end
 function print_tree_util(node::Node, depth)
 	if(!isdefined(node, :left) && !isdefined(node, :right) && !isdefined(node, :up) && !isdefined(node, :down))
 		print(repeat("    ", depth))
-		@printf("Leaf Direction: %s, Weight: %f\n", node.direction, node.weight)
+		@printf("Leaf Direction: %s, Weight: %s\n", node.direction, string(node.weight))
 		return
 	end
 	print(repeat("    ", depth))
-	@printf("Node Direction: %s, Weight: %f\n", node.direction, node.weight)
+	@printf("Node Direction: %s, Weight: %s\n", node.direction, string(node.weight))
 	if(isdefined(node, :left))
 		print(repeat("    ", depth))
 		print_tree_util(node.left, depth+1)
