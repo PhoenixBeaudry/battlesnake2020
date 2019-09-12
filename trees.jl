@@ -10,12 +10,14 @@ include("gamestate.jl")
 
 #@REMIND Dont forget to take into account starvation, must incentivise food in weight.
 
+#@TODO I gotta make the decision tree eat up less memory....
+
 
 ##### END #####
 
 ##### Data Structures #####
 mutable struct Node
-	gamestate::GameState
+	gamestate::Union{Nothing, GameState}
 	weight
 	direction
 	left::Union{Nothing, Node}
@@ -73,6 +75,7 @@ function make_all_moves!(node::Node, depth)
 		node.right = generate_move_node(node.gamestate, "right")
 		node.up = generate_move_node(node.gamestate, "up")
 		node.down = generate_move_node(node.gamestate, "down")
+		#node.gamestate = nothing
 		make_all_moves!(node.left, depth-1)
 		make_all_moves!(node.right, depth-1)
 		make_all_moves!(node.up, depth-1)
