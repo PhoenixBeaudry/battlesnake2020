@@ -144,7 +144,7 @@ function simulate_one_move(gamestate, mymove)
 
 	#Check wall collisions, if collision return.
 	target = direction_to_node(gamestate.you.body[1], mymove)
-	if(target.x < 1 || target.y < 1 || target.x > gamestate.board.width-1 || target.y > gamestate.board.height-1)
+	if(target.x < 1 || target.y < 1 || target.x > gamestate.board.width || target.y > gamestate.board.height)
 		return -1
 	end
 	newgamestate = deepcopy(gamestate)
