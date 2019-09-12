@@ -130,7 +130,11 @@ function sum_weights!(node::Node)
 	if(isdefined(node, :down))
 		node.weight += sum_weights!(node.down)
 	end
-
+	#All moves end in death, propagate death upwards.
+	if(node.weight == -40000)
+		node.weight = "death"
+		return -10000
+	end
 	return node.weight
 end
 

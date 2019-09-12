@@ -7,7 +7,7 @@ include("gamestate.jl")
 include("functionstrategies.jl")
 
 function testEnv()
-	testdata = "{
+	testdata2 = "{
 	  \"game\": {
 	    \"id\": \"game-id-string\"
 	  },
@@ -70,7 +70,7 @@ function testEnv()
 	  }
 	}"
 
-	testdata2 = "{\"game\":{\"id\":\"061e5838-78e1-4bc8-be65-2eb4d7371537\"},\"turn\":2,\"board\":{\"height\":11,\"width\":11,\"food\":[{\"x\":2,\"y\":9},{\"x\":6,\"y\":7},{\"x\":0,\"y\":7},{\"x\":8,\"y\":9}],\"snakes\":[{\"id\":\"gs_PyYXfJRtDh3kQbQCSPWVmvcK\",\"name\":\"AhmedNSidd / Samaritan-2\",\"health\":98,\"body\":[{\"x\":1,\"y\":3},{\"x\":1,\"y\":2},{\"x\":1,\"y\":1}]},{\"id\":\"gs_4qrbVxQCCf6BmgPP7TJBFTyX\",\"name\":\"nbw / gorogoro\",\"health\":98,\"body\":[{\"x\":9,\"y\":7},{\"x\":9,\"y\":8},{\"x\":9,\"y\":9}]},{\"id\":\"gs_VRFQMB6Hd6qHqGQdqHKtthXT\",\"name\":\"JoshLarouche / Battlesnake\",\"health\":98,\"body\":[{\"x\":1,\"y\":7},{\"x\":1,\"y\":8},{\"x\":1,\"y\":9}]},{\"id\":\"gs_ccxP46yKwYbKBxkyrFDhR6VK\",\"name\":\"PhoenixBeaudry / Test\",\"health\":98,\"body\":[{\"x\":10,\"y\":0},{\"x\":9,\"y\":0},{\"x\":9,\"y\":1}]}]},\"you\":{\"id\":\"gs_ccxP46yKwYbKBxkyrFDhR6VK\",\"name\":\"PhoenixBeaudry / Test\",\"health\":98,\"body\":[{\"x\":10,\"y\":0},{\"x\":9,\"y\":0},{\"x\":9,\"y\":1}]}}"
+	testdata = "{\"game\":{\"id\":\"2891a981-230d-47dc-be47-9840c902d393\"},\"turn\":37,\"board\":{\"height\":11,\"width\":11,\"food\":[{\"x\":0,\"y\":5},{\"x\":3,\"y\":10}],\"snakes\":[{\"id\":\"gs_qCDXP8QYJF7dHfRwq4tggBYQ\",\"name\":\"unapersona / Glotona\",\"health\":99,\"body\":[{\"x\":4,\"y\":3},{\"x\":4,\"y\":2},{\"x\":5,\"y\":2},{\"x\":5,\"y\":1},{\"x\":6,\"y\":1},{\"x\":6,\"y\":2},{\"x\":6,\"y\":3},{\"x\":6,\"y\":4},{\"x\":6,\"y\":5},{\"x\":6,\"y\":6},{\"x\":6,\"y\":7}]},{\"id\":\"gs_Rmx7bMmxtKcKKvXvPC7dm76f\",\"name\":\"PhoenixBeaudry / Test\",\"health\":63,\"body\":[{\"x\":5,\"y\":4},{\"x\":5,\"y\":5},{\"x\":5,\"y\":6}]}]},\"you\":{\"id\":\"gs_Rmx7bMmxtKcKKvXvPC7dm76f\",\"name\":\"PhoenixBeaudry / Test\",\"health\":63,\"body\":[{\"x\":5,\"y\":4},{\"x\":5,\"y\":5},{\"x\":5,\"y\":6}]}}"
 	currentGameState = JSON2.read(testdata, GameState)
 	reformat_gamestate!(currentGameState)
 	generate_gamestate_board!(currentGameState)
