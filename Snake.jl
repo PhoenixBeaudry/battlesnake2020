@@ -5,6 +5,9 @@
 #@IDEA Currently the enemy ai doesnt account for aggressive snakes
 # they only follow the highest weighted path in the gamestate matrix.
 
+#@TODO Make snake afraid of possible head on head collisions with larger snakes.
+# and favour collisions if bigger snake.
+
 ##### END #####
 
 import HTTP, JSON2, Sockets, Logging, JSON
@@ -18,7 +21,6 @@ include("functionstrategies.jl")
 serverlogfile = open("server.log", "w+")
 serverlogger = Logging.SimpleLogger(serverlogfile, Logging.Debug)
 Logging.global_logger(serverlogger)
-
 
 
 # respond_to_ping
@@ -64,6 +66,7 @@ function respond_to_move(req::HTTP.Request)
 	#Then return the JSON for the move
 	return HTTP.Response(200, body=JSON.json(choice))
 end
+
 
 # respond_to_shutdown
 # When POST is sent to /shutdown stop the server.

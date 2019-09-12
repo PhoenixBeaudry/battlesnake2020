@@ -139,7 +139,6 @@ end
 # RETURN: ::GameState
 # Simulates the game one step, assuming all enemy snakes
 # take the best adjacent weighted node and you take 'mymove' (direction string)
-#@FIX If food is collected dont remove tail.
 function simulate_one_move(gamestate, mymove)
 
 	#Check wall collisions, if collision return.
@@ -154,7 +153,7 @@ function simulate_one_move(gamestate, mymove)
 			#Find the best move
 			move = largest_adjacent_node(snake.body[1], gamestate)
 			#Simulate move by removing tail and head and adding new head
-			if(length(snake.body)==1)
+			if(length(snake.body)==1 || in(move, newgamestate.board.food))
 				pushfirst!(snake.body, move)
 			else
 				pop!(snake.body)
@@ -167,7 +166,7 @@ function simulate_one_move(gamestate, mymove)
 		else
 			move = direction_to_node(snake.body[1], mymove)
 			#Simulate move by removing tail and head and adding new head
-			if(length(snake.body)==1)
+			if(length(snake.body)==1 || in(move, newgamestate.board.food))
 				pushfirst!(snake.body, move)
 			else
 				pop!(snake.body)
@@ -184,7 +183,7 @@ function simulate_one_move(gamestate, mymove)
 		end
 	end
 		#Simulate move by removing tail and head and adding new head
-	if(length(newgamestate.you.body)==1)
+	if(length(newgamestate.you.body)==1 || in(move, newgamestate.board.food))
 		pushfirst!(newgamestate.you.body, move)
 	else
 		pop!(newgamestate.you.body)
