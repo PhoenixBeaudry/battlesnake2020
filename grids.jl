@@ -151,7 +151,6 @@ function simulate_one_move(gamestate, mymove)
 	for snake in gamestate.board.snakes
 		if(snake.body[1] != gamestate.you.body[1])
 			if(adjacent_nodes(target, snake.body[1]) && snake.health >= gamestate.you.health)
-				println("DEATH BY HEAD COLLISION")
 				return -1
 			end	
 		end
