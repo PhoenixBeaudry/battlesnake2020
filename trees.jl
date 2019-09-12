@@ -6,6 +6,9 @@ include("gamestate.jl")
 
 #@IDEA Use Julia Multithreading to generate nodes and weights (@spawn).
 
+#@FIX Major revisions needed: due to summing nodes, deeper branches death leafs add up,
+# outweighing immediate deaths. Current work around is just to check for -10000 equality, not great
+
 #@REMIND Only leaf nodes contribute to weight, at least I think thats best.
 
 #@REMIND Dont forget to take into account starvation, must incentivise food in weight.
@@ -134,8 +137,11 @@ end
 
 #Returns the best move of the tree root as a string
 function best_move(tree::Tree)
-	maxweight = tree.root.left.weight
-	maxmove = "left"
+	maxweight = -1111111111
+	if(tree.root.left.weight > maxweight && tree.root.left.weight != -10000)
+		maxweight = tree.root.left.weight
+		maxmove = "left"
+	end
 	if(tree.root.right.weight > maxweight && tree.root.right.weight != -10000)
 		maxweight = tree.root.right.weight
 		maxmove = "right"
