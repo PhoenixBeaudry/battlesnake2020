@@ -177,20 +177,20 @@ function simulate_one_move(gamestate, mymove)
 	end
 	#Move yourself
 	move = direction_to_node(newgamestate.you.body[1], mymove)
-	#Make sure move isnt into tail if size two.
+		#Make sure move isnt into tail if size two.
 	if(length(newgamestate.you.body)==2)
 		if(move == newgamestate.you.body[2])
 			return -1
 		end
 	end
-	#Simulate move by removing tail and head and adding new head
+		#Simulate move by removing tail and head and adding new head
 	if(length(newgamestate.you.body)==1)
 		pushfirst!(newgamestate.you.body, move)
 	else
 		pop!(newgamestate.you.body)
 		pushfirst!(newgamestate.you.body, move)
 	end
-	#If food overlap, remove food.
+		#If food overlap, remove food.
 	if(in(move, newgamestate.board.food))
 		splice!(newgamestate.board.food, findfirst(isequal(move), newgamestate.board.food))
 	end

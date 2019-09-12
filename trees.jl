@@ -17,6 +17,7 @@ include("gamestate.jl")
 mutable struct Node
 	gamestate::GameState
 	weight::Int64
+	direction
 	left::Union{Nothing, Node}
 	right::Union{Nothing, Node}
 	up::Union{Nothing, Node}
@@ -39,7 +40,7 @@ end
 function generate_decision_tree(rootgamestate, maxdepth)
 	#Make Tree struct
 	decisiontree = Tree(rootgamestate)
-
+	decisiontree.root.direction = "root"
 	#Generate the Nodes.
 	make_all_moves!(decisiontree.root, maxdepth)
 
@@ -58,7 +59,7 @@ function make_all_moves!(node::Node, depth)
 	if(depth == 0)
 		#I am a leaf node, therefore you should find out my weight
 			#Case where leaf node is a death node resulting in no gamestate
-		if(isdefined(node, :weight))
+		if(!isdefined(node, :gamestate))
 			return
 		else
 			node.weight = generate_gamestate_weight(node.gamestate)
@@ -69,34 +70,12 @@ function make_all_moves!(node::Node, depth)
 	#Generate move nodes for each direction
 	if(isdefined(node, :gamestate))
 		node.left = generate_move_node(node.gamestate, "left")
-	end
-
-	if(isdefined(node, :gamestate))
 		node.right = generate_move_node(node.gamestate, "right")
-	end
-
-	if(isdefined(node, :gamestate))
 		node.up = generate_move_node(node.gamestate, "up")
-	end
-
-	if(isdefined(node, :gamestate))
 		node.down = generate_move_node(node.gamestate, "down")
-	end
-
-	#Recursively generate moves
-	if(isdefined(node, :left))
 		make_all_moves!(node.left, depth-1)
-	end
-
-	if(isdefined(node, :right))
 		make_all_moves!(node.right, depth-1)
-	end
-	
-	if(isdefined(node, :up))
 		make_all_moves!(node.up, depth-1)
-	end
-
-	if(isdefined(node, :down))
 		make_all_moves!(node.down, depth-1)
 	end
 
@@ -107,6 +86,7 @@ end
 function generate_move_node(gamestate::GameState, mymove)
 	#Create blank Node struct.
 	self = Node()
+	self.direction = mymove
 	# Simulate the gamestate by one move then replace old gamestate.
 	newgamestate = simulate_one_move(gamestate, mymove)
 
@@ -127,11 +107,11 @@ end
 
 # sum_weights!(::Node)
 # RETURN: None
-# @IDEA This is where gamestate weight should be evaled maybe.
 function sum_weights!(node::Node)
-	if(isdefined(node, :weight))
+	if(node.weight < 11111)
 		return node.weight
 	end
+	node.weight = 0
 
 	if(isdefined(node, :left))
 		node.weight += sum_weights!(node.left)
@@ -149,7 +129,7 @@ function sum_weights!(node::Node)
 		node.weight += sum_weights!(node.down)
 	end
 
-	return
+	return node.weight
 end
 
 #Returns the best move of the tree root as a string
@@ -175,28 +155,36 @@ end
 
 
 ##### Printing #####
-
-
 #@FIX printing doesnt work really at all anymore, must be someway to make this pretty.
 function print_tree(tree::Tree)
 	print_tree_util(tree.root, 0)
 end
 
 function print_tree_util(node::Node, depth)
-	if(!isdefined(node, :left))
+	if(!isdefined(node, :left) && !isdefined(node, :right) && !isdefined(node, :up) && !isdefined(node, :down))
 		print(repeat("    ", depth))
-		@printf("Node:%f Children: None\n", node.weight)
+		@printf("Leaf Direction: %s, Weight: %f\n", node.direction, node.weight)
 		return
 	end
-	@printf("Node:%f Children:%f,%f,%f,%f\n", node.weight, node.left.weight, node.right.weight, node.up.weight, node.down.weight)
 	print(repeat("    ", depth))
-	print_tree_util(node.left, depth+1)
-	print(repeat("    ", depth))
-	print_tree_util(node.right, depth+1)
-	print(repeat("    ", depth))
-	print_tree_util(node.up, depth+1)
-	print(repeat("    ", depth))
-	print_tree_util(node.down, depth+1)
+	@printf("Node Direction: %s, Weight: %f\n", node.direction, node.weight)
+	if(isdefined(node, :left))
+		print(repeat("    ", depth))
+		print_tree_util(node.left, depth+1)
+	end
+	if(isdefined(node, :right))
+		print(repeat("    ", depth))
+		print_tree_util(node.right, depth+1)
+	end
+	if(isdefined(node, :up))
+		print(repeat("    ", depth))
+		print_tree_util(node.up, depth+1)
+	end
+	if(isdefined(node, :down))
+		print(repeat("    ", depth))
+		print_tree_util(node.down, depth+1)
+	end
+
 end
 
 ##### END #####
