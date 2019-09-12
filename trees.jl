@@ -138,6 +138,7 @@ end
 #Returns the best move of the tree root as a string
 function best_move(tree::Tree)
 	maxweight = -1111111111
+	maxmove = "dead"
 	if(tree.root.left.weight > maxweight && tree.root.left.weight != -10000)
 		maxweight = tree.root.left.weight
 		maxmove = "left"
