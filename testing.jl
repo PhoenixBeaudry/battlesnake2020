@@ -70,7 +70,7 @@ function testEnv()
 	  }
 	}"
 
-	testdata = "{\"game\":{\"id\":\"ab774003-6de3-4d5a-a4c3-99fb4d784ef1\"},\"turn\":2,\"board\":{\"height\":11,\"width\":11,\"food\":[{\"x\":2,\"y\":6},{\"x\":10,\"y\":5},{\"x\":7,\"y\":10},{\"x\":4,\"y\":0}],\"snakes\":[{\"id\":\"gs_q6p8Kfp9MRYmCQGyr87X6Yy3\",\"name\":\"Xe / Greedy\",\"health\":98,\"body\":[{\"x\":2,\"y\":0},{\"x\":2,\"y\":1},{\"x\":1,\"y\":1}]},{\"id\":\"gs_W34KfqPkBt6R8SPxYtGKXRTc\",\"name\":\"lduchosal / monica-0.1\",\"health\":98,\"body\":[{\"x\":9,\"y\":7},{\"x\":9,\"y\":8},{\"x\":9,\"y\":9}]},{\"id\":\"gs_kCYTryR6PY7XrkjSFXDjFX7V\",\"name\":\"JJComish / No_tread_snek\",\"health\":98,\"body\":[{\"x\":1,\"y\":7},{\"x\":1,\"y\":8},{\"x\":1,\"y\":9}]},{\"id\":\"gs_4K6gVp8bSCx9WxbXtwjgvdHH\",\"name\":\"PhoenixBeaudry / Test\",\"health\":98,\"body\":[{\"x\":10,\"y\":2},{\"x\":9,\"y\":2},{\"x\":9,\"y\":1}]}]},\"you\":{\"id\":\"gs_4K6gVp8bSCx9WxbXtwjgvdHH\",\"name\":\"PhoenixBeaudry / Test\",\"health\":98,\"body\":[{\"x\":10,\"y\":2},{\"x\":9,\"y\":2},{\"x\":9,\"y\":1}]}}"
+	testdata = "{\"game\":{\"id\":\"4b7a841a-f87c-4d79-b08f-2782d6a836a6\"},\"turn\":2,\"board\":{\"height\":11,\"width\":11,\"food\":[{\"x\":9,\"y\":4},{\"x\":3,\"y\":2},{\"x\":7,\"y\":6},{\"x\":6,\"y\":6},{\"x\":0,\"y\":3}],\"snakes\":[{\"id\":\"gs_YjHTJtC6gXGwk6kFHcYxk7H6\",\"name\":\"jeremysnell / Gib Rattler\",\"health\":98,\"body\":[{\"x\":0,\"y\":2},{\"x\":1,\"y\":2},{\"x\":1,\"y\":1}]},{\"id\":\"gs_3VYwmpr9H64QkKdDXjVV7txT\",\"name\":\"Petah / Aldo\",\"health\":98,\"body\":[{\"x\":9,\"y\":7},{\"x\":9,\"y\":8},{\"x\":9,\"y\":9}]},{\"id\":\"gs_rCPx9pFXDgfRJj3fdy8ftjxQ\",\"name\":\"AndrewRozendal / snaples\",\"health\":98,\"body\":[{\"x\":1,\"y\":7},{\"x\":1,\"y\":8},{\"x\":1,\"y\":9}]},{\"id\":\"gs_gXkJbYxJj4XbF9XjvMxHKbkM\",\"name\":\"PhoenixBeaudry / Test\",\"health\":98,\"body\":[{\"x\":4,\"y\":2},{\"x\":5,\"y\":2},{\"x\":5,\"y\":1}]}]},\"you\":{\"id\":\"gs_gXkJbYxJj4XbF9XjvMxHKbkM\",\"name\":\"PhoenixBeaudry / Test\",\"health\":98,\"body\":[{\"x\":4,\"y\":2},{\"x\":5,\"y\":2},{\"x\":5,\"y\":1}]}}"
 	currentGameState = JSON2.read(testdata, GameState)
 	reformat_gamestate!(currentGameState)
 	generate_gamestate_board!(currentGameState)
@@ -90,5 +90,5 @@ end
 
 
 currentGameState = testEnv()
-tree = generate_decision_tree(currentGameState, 2)
-print_tree(tree)
+tree = generate_decision_tree(currentGameState, 4)
+print(best_move(tree))

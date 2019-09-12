@@ -136,15 +136,15 @@ end
 function best_move(tree::Tree)
 	maxweight = tree.root.left.weight
 	maxmove = "left"
-	if(tree.root.right.weight > maxweight)
+	if(tree.root.right.weight > maxweight && tree.root.right.weight != -10000)
 		maxweight = tree.root.right.weight
 		maxmove = "right"
 	end
-	if(tree.root.up.weight > maxweight)
+	if(tree.root.up.weight > maxweight && tree.root.up.weight != -10000)
 		maxweight = tree.root.up.weight
 		maxmove = "up"
 	end
-	if(tree.root.down.weight > maxweight)
+	if(tree.root.down.weight > maxweight && tree.root.down.weight != -10000)
 		maxweight = tree.root.down.weight
 		maxmove = "down"
 	end
