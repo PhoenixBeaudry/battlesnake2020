@@ -8,8 +8,8 @@ include("functionstrategies.jl")
 
 #@TODO Add Typing to most methods.
 
-#@FIX Snake will turn back into own tail if only 2 long, because
-# I assume it thinks next turn the tail will not be there and its a valid move.
+#@FIX While head collision vs larger enemy snakes is considered a death
+# the move should still be taken if it is less 'guaranteed' 
 
 ##### END #####
 
@@ -150,7 +150,7 @@ function simulate_one_move(gamestate, mymove)
 	#Before major simulating check if its a 'enemy snake might eat me state' and count as death?? Or perhaps very low weight.
 	for snake in gamestate.board.snakes
 		if(snake.body[1] != gamestate.you.body[1])
-			if(adjacent_nodes(target, snake.body[1]) && snake.health >= gamestate.you.health)
+			if(adjacent_nodes(target, snake.body[1]) && length(snake.body) >= length(gamestate.you.body))
 				return -1
 			end	
 		end
