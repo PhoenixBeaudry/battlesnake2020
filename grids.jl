@@ -74,7 +74,7 @@ end
 # RETURN: TupleArray
 # Given an index, returns all nodes that are 'depth' away
 #@FIX dim doesnt support non square boards.
-function nodes_of_depth_distance(seed::NamedTuple{(:x, :y),Tuple{Int32, Int32}}, depth::Int32, dim::Int32)
+function nodes_of_depth_distance(seed::NamedTuple{(:x, :y),Tuple{Int, Int}}, depth::Int, dim::Int)
 	nodes = Set()
 
 	#Only return seed if depth is 0
@@ -112,7 +112,7 @@ end
 #Spreads weights from points of interest across the board
 # influence!(board, seed, func, depth)
 # RETURN: None
-function influence!(board::Array{Point,2}, seed::NamedTuple{(:x, :y),Tuple{Int32, Int32}}, func, depth::Int32)
+function influence!(board::Array{Point,2}, seed::NamedTuple{(:x, :y),Tuple{Int, Int}}, func, depth::Int)
 	for currentdepth = 0:depth
 		currentnodes = nodes_of_depth_distance(seed, currentdepth, size(board)[1])
 		for node in currentnodes
@@ -233,7 +233,7 @@ end
 
 # adjacent_nodes(::NamedTuple, ::NamedTuple)
 # RETURN: ::Boolean
-function adjacent_nodes(node1::NamedTuple{(:x, :y),Tuple{Int32, Int32}}, node2::NamedTuple{(:x, :y),Tuple{Int32, Int32}})
+function adjacent_nodes(node1::NamedTuple{(:x, :y),Tuple{Int, Int}}, node2::NamedTuple{(:x, :y),Tuple{Int, Int}})
 	if(node1.x != node2.x && node1.y != node2.y)
 		return false
 	elseif(node1.x == node2.x && (node1.y == node2.y+1 || node1.y == node2.y-1))
@@ -248,7 +248,7 @@ end
 # direction_to_node(::NamedTuple, :String)
 # RETURN: ::NamedTuple
 # Converts a coordinate and a direction to another coordinate
-function direction_to_node(location::NamedTuple{(:x, :y),Tuple{Int32, Int32}}, dir::String)
+function direction_to_node(location::NamedTuple{(:x, :y),Tuple{Int, Int}}, dir::String)
 	if(dir == "left")
 		return (x=location.x-1,y=location.y)
 	elseif(dir == "right")
@@ -265,7 +265,7 @@ end
 # largest_adjacent_node(::Namedtuple, ::GameState)
 # RETURN: ::NamedTuple
 # Returns best move node based on high weighted nodes
-function largest_adjacent_node(location::NamedTuple{(:x, :y),Tuple{Int32, Int32}}, gamestate::GameState)
+function largest_adjacent_node(location::NamedTuple{(:x, :y),Tuple{Int, Int}}, gamestate::GameState)
 	adjacentnodes = nodes_of_depth_distance(location, 1, size(gamestate.matrix)[1])
 	highestnode = (x=-1, y=-1)
 	highestweight = -100000
@@ -283,7 +283,7 @@ end
 # RETURN ::String
 # Returns direction of best move based on high weighted nodes
 #@CLEAN Rename this stupid function lol
-function largest_adjacent_weight_dir(location::NamedTuple{(:x, :y),Tuple{Int32, Int32}}, gamestate::GameState)
+function largest_adjacent_weight_dir(location::NamedTuple{(:x, :y),Tuple{Int, Int}}, gamestate::GameState)
 	adjacentnodes = nodes_of_depth_distance(location, 1, size(gamestate.matrix)[1])
 	highestnode = (x=-1, y=-1)
 	highestweight = -100000

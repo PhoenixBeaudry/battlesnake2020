@@ -90,6 +90,6 @@ end
 
 
 currentGameState = testEnv()
-#tree = generate_decision_tree(currentGameState, 4)
+tree = generate_decision_tree(currentGameState, 4)
 #print_tree(tree)
 #print(best_move(tree))

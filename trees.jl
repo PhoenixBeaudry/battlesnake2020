@@ -1,7 +1,7 @@
 using Printf
 include("grids.jl")
 include("gamestate.jl")
-
+import Base.Threads.@spawn
 ##### TODOS #####
 
 #@IDEA Use Julia Multithreading to generate nodes and weights (@spawn).
@@ -37,9 +37,9 @@ end
 
 ##### Decision Tree #####
 
-# generate_decision_tree(::GameState, ::Int32)
+# generate_decision_tree(::GameState, ::Int)
 # RETURN: ::Tree
-function generate_decision_tree(rootgamestate::GameState, maxdepth::Int32)
+function generate_decision_tree(rootgamestate::GameState, maxdepth::Int)
 	#Make Tree struct
 	decisiontree = Tree(rootgamestate)
 	decisiontree.root.direction = "root"
@@ -55,9 +55,9 @@ function generate_decision_tree(rootgamestate::GameState, maxdepth::Int32)
 end
 
 
-# make_all_moves!(::Node, ::Int32)
+# make_all_moves!(::Node, ::Int)
 # RETURN: None
-function make_all_moves!(node::Node, depth::Int32)
+function make_all_moves!(node::Node, depth::Int)
 	if(depth == 0)
 		#I am a leaf node, therefore you should find out my weight
 			#Case where leaf node is a death node resulting in no gamestate
@@ -76,10 +76,10 @@ function make_all_moves!(node::Node, depth::Int32)
 		node.up = generate_move_node(node.gamestate, "up")
 		node.down = generate_move_node(node.gamestate, "down")
 		#node.gamestate = nothing
-		make_all_moves!(node.left, depth-1)
-		make_all_moves!(node.right, depth-1)
-		make_all_moves!(node.up, depth-1)
-		make_all_moves!(node.down, depth-1)
+		@spawn make_all_moves!(node.left, depth-1)
+		@spawn make_all_moves!(node.right, depth-1)
+		@spawn make_all_moves!(node.up, depth-1)
+		@spawn make_all_moves!(node.down, depth-1)
 	end
 
 end
@@ -104,7 +104,7 @@ function generate_move_node(gamestate::GameState, mymove::String)
 end
 
 # generate_gamestate_weight(::GameState)
-# RETURN: ::Int32
+# RETURN: ::Int
 function generate_gamestate_weight(gamestate::GameState)
 	return gamestate.you.health
 end
