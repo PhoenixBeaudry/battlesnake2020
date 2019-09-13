@@ -37,9 +37,9 @@ end
 
 ##### Decision Tree #####
 
-# generate_decision_tree(::GameState, ::Int64)
+# generate_decision_tree(::GameState, ::Int32)
 # RETURN: ::Tree
-function generate_decision_tree(rootgamestate::GameState, maxdepth::Int64)
+function generate_decision_tree(rootgamestate::GameState, maxdepth::Int32)
 	#Make Tree struct
 	decisiontree = Tree(rootgamestate)
 	decisiontree.root.direction = "root"
@@ -55,9 +55,9 @@ function generate_decision_tree(rootgamestate::GameState, maxdepth::Int64)
 end
 
 
-# make_all_moves!(::Node, ::Int64)
+# make_all_moves!(::Node, ::Int32)
 # RETURN: None
-function make_all_moves!(node::Node, depth::Int64)
+function make_all_moves!(node::Node, depth::Int32)
 	if(depth == 0)
 		#I am a leaf node, therefore you should find out my weight
 			#Case where leaf node is a death node resulting in no gamestate
@@ -104,7 +104,7 @@ function generate_move_node(gamestate::GameState, mymove::String)
 end
 
 # generate_gamestate_weight(::GameState)
-# RETURN: ::Int64
+# RETURN: ::Int32
 function generate_gamestate_weight(gamestate::GameState)
 	return gamestate.you.health
 end
