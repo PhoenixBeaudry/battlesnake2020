@@ -15,23 +15,12 @@ include("functionstrategies.jl")
 
 ##### END #####
 
-##### STRUCTS #####
-mutable struct Point
-	type
-	weight::Float64
-	Point() = new(".", 0.0)
-	Point(type, weight) = new(type, weight)
-end
-
-##### END #####
-
-
 ##### GAMEBOARD AND GAMESTATE GENERATION #####
 
 # reformat_gamestate!(::GameState)
 # RETURN: None
 # Converts all indexes in GameState to 1-indexing.
-function reformat_gamestate!(gamestate)
+function reformat_gamestate!(gamestate::GameState)
 
 	newfood = []
 	for food in gamestate.board.food
@@ -65,7 +54,7 @@ end
 # generate_gamestate_board!(::GameState)
 # RETURN: None
 # Generates the boardmatrix from the gamestate and stores in gamestate struct
-function generate_gamestate_board!(gamestate)
+function generate_gamestate_board!(gamestate::GameState)
 	board = Matrix{Point}(undef, gamestate.board.width, gamestate.board.height)
 	fill!(board, Point())
 	for food in gamestate.board.food
@@ -84,7 +73,8 @@ end
 # nodes_of_depth_distance(::NamedTuple, ::Int, ::Tuple)
 # RETURN: TupleArray
 # Given an index, returns all nodes that are 'depth' away
-function nodes_of_depth_distance(seed::NamedTuple, depth, dim)
+#@FIX dim doesnt support non square boards.
+function nodes_of_depth_distance(seed::NamedTuple{(:x, :y),Tuple{Int64, Int64}}, depth::Int64, dim::Int64)
 	nodes = Set()
 
 	#Only return seed if depth is 0
@@ -122,7 +112,7 @@ end
 #Spreads weights from points of interest across the board
 # influence!(board, seed, func, depth)
 # RETURN: None
-function influence!(board, seed, func, depth)
+function influence!(board::Array{Point,2}, seed::NamedTuple{(:x, :y),Tuple{Int64, Int64}}, func, depth::Int64)
 	for currentdepth = 0:depth
 		currentnodes = nodes_of_depth_distance(seed, currentdepth, size(board)[1])
 		for node in currentnodes
@@ -141,7 +131,7 @@ end
 # RETURN: ::GameState
 # Simulates the game one step, assuming all enemy snakes
 # take the best adjacent weighted node and you take 'mymove' (direction string)
-function simulate_one_move(gamestate, mymove)
+function simulate_one_move(gamestate::GameState, mymove::String)
 
 	#Check wall collisions, if collision return.
 	target = direction_to_node(gamestate.you.body[1], mymove)
@@ -243,7 +233,7 @@ end
 
 # adjacent_nodes(::NamedTuple, ::NamedTuple)
 # RETURN: ::Boolean
-function adjacent_nodes(node1, node2)
+function adjacent_nodes(node1::NamedTuple{(:x, :y),Tuple{Int64, Int64}}, node2::NamedTuple{(:x, :y),Tuple{Int64, Int64}})
 	if(node1.x != node2.x && node1.y != node2.y)
 		return false
 	elseif(node1.x == node2.x && (node1.y == node2.y+1 || node1.y == node2.y-1))
@@ -258,7 +248,7 @@ end
 # direction_to_node(::NamedTuple, :String)
 # RETURN: ::NamedTuple
 # Converts a coordinate and a direction to another coordinate
-function direction_to_node(location, dir)
+function direction_to_node(location::NamedTuple{(:x, :y),Tuple{Int64, Int64}}, dir::String)
 	if(dir == "left")
 		return (x=location.x-1,y=location.y)
 	elseif(dir == "right")
@@ -275,7 +265,7 @@ end
 # largest_adjacent_node(::Namedtuple, ::GameState)
 # RETURN: ::NamedTuple
 # Returns best move node based on high weighted nodes
-function largest_adjacent_node(location, gamestate)
+function largest_adjacent_node(location::NamedTuple{(:x, :y),Tuple{Int64, Int64}}, gamestate::GameState)
 	adjacentnodes = nodes_of_depth_distance(location, 1, size(gamestate.matrix)[1])
 	highestnode = (x=-1, y=-1)
 	highestweight = -100000
@@ -293,7 +283,7 @@ end
 # RETURN ::String
 # Returns direction of best move based on high weighted nodes
 #@CLEAN Rename this stupid function lol
-function largest_adjacent_weight_dir(location, gamestate)
+function largest_adjacent_weight_dir(location::NamedTuple{(:x, :y),Tuple{Int64, Int64}}, gamestate::GameState)
 	adjacentnodes = nodes_of_depth_distance(location, 1, size(gamestate.matrix)[1])
 	highestnode = (x=-1, y=-1)
 	highestweight = -100000
@@ -326,7 +316,7 @@ end
 ##### PRINTING #####
 
 #Prints a board, by type and weight
-function print_board(gamestate)
+function print_board(gamestate::GameState)
 	println("Type board:")
 	for column in eachcol(gamestate.matrix)
 		for point in column
