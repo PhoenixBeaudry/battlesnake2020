@@ -6,8 +6,6 @@ include("functionstrategies.jl")
 #@IDEA when the node weight is finally implemented, maybe give 
 #		high weights to dead enemy snakes, eg. aggressive strat.
 
-#@TODO Add Typing to most methods.
-
 #@FIX While head collision vs larger enemy snakes is considered a death
 # the move should still be taken if it is less 'guaranteed'
 

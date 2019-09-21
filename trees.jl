@@ -4,13 +4,13 @@ include("gamestate.jl")
 import Base.Threads.@spawn
 ##### TODOS #####
 
-#@IDEA Use Julia Multithreading to generate nodes and weights (@spawn).
-
-#@REMIND Only leaf nodes contribute to weight, at least I think thats best.
+#@IDEA Use SSS* to not generate gamestate for all nodes.
 
 #@REMIND Dont forget to take into account starvation, must incentivise food in weight.
 
 #@TODO I gotta make the decision tree eat up less memory....
+
+#@TODO Make a better gamestate weight function.
 
 
 ##### END #####
@@ -18,8 +18,8 @@ import Base.Threads.@spawn
 ##### Data Structures #####
 mutable struct Node
 	gamestate::Union{Nothing, GameState}
-	weight
-	direction
+	weight::Union{Float64, String, Int}
+	direction::String
 	left::Union{Nothing, Node}
 	right::Union{Nothing, Node}
 	up::Union{Nothing, Node}
@@ -113,7 +113,7 @@ end
 # RETURN: None
 function sum_weights!(node::Node)
 	if(node.weight == "death")
-		return -10000
+		return 0
 	elseif(node.weight == "undef")
 		node.weight = 0
 	end
@@ -134,9 +134,9 @@ function sum_weights!(node::Node)
 		node.weight += sum_weights!(node.down)
 	end
 	#All moves end in death, propagate death upwards.
-	if(node.weight == -40000)
+	if(node.weight == 0)
 		node.weight = "death"
-		return -10000
+		return 0
 	end
 	return node.weight
 end
