@@ -47,6 +47,8 @@ function generate_decision_tree(rootgamestate::GameState, maxdepth::Int)
 	#Generate the Nodes.
 	make_all_moves!(decisiontree.root, maxdepth)
 
+	sleep(0.005)
+
 	#Find the highest weighted Node
 	sum_weights!(decisiontree.root)
 
@@ -80,6 +82,10 @@ function make_all_moves!(node::Node, depth::Int)
 		@spawn make_all_moves!(node.right, depth-1)
 		@spawn make_all_moves!(node.up, depth-1)
 		@spawn make_all_moves!(node.down, depth-1)
+		#make_all_moves!(node.left, depth-1)
+		#make_all_moves!(node.right, depth-1)
+		#make_all_moves!(node.up, depth-1)
+		#make_all_moves!(node.down, depth-1)
 	end
 
 end
